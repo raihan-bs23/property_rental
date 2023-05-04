@@ -13,11 +13,11 @@ class RealEstateProperties(models.Model):
     expected_price = fields.Float(string="Expected Price", required=True)
     selling_price = fields.Float(string="Selling Price", readonly=True)
     bedrooms = fields.Integer(string="No. of Bedrooms", default=2)
-    living_area = fields.Integer(string="Living Area in SQ.")
+    living_area = fields.Integer(string="Living Area in (sqm)")
     facades = fields.Integer(string="Facades")
     garage = fields.Boolean(string="Have Garage ?")
     garden = fields.Boolean(string="Have Garden ?")
-    garden_area = fields.Boolean(string="Garden Area")
+    garden_area = fields.Integer(string="Garden Area (sqm)")
     garden_orientation = fields.Selection(string="Garden Orientation Type", selection=[
         ('north', 'North'),
         ('south', 'South'),
