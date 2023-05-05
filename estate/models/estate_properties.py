@@ -9,7 +9,8 @@ class RealEstateProperties(models.Model):
     name = fields.Char(string='Estate Name', required=True)
     description = fields.Text(string="description")
     postcode = fields.Char(string="postcode")
-    date_availability = fields.Date(string="Availability Date", default=lambda self: fields.Date.today() + relativedelta(months=3))
+    date_availability = fields.Date(string="Availability Date",
+                                    default=lambda self: fields.Date.today() + relativedelta(months=3))
     expected_price = fields.Float(string="Expected Price", required=True)
     selling_price = fields.Float(string="Selling Price", readonly=True)
     bedrooms = fields.Integer(string="No. of Bedrooms", default=2)
@@ -32,16 +33,10 @@ class RealEstateProperties(models.Model):
         ('sold', 'Sold'),
         ('canceled', 'Canceled')
     ], default='new')
+    property_type_id = fields.Many2one("estate.property.type", string="Property Type")
+    seller_id = fields.Char(string="Salesman", related="property_type_id.seller")
+    buyer_id = fields.Char(string="Buyer Name", related="property_type_id.buyer")
 
 
-# class AddNewFields(models.Model):
-#     _inherit = 'estate.property'
-#
-#     active = fields.Boolean(string='is active?', default=False)
-#     status = fields.Selection(string="Status", selection=[
-#         ('new', 'New'),
-#         ('offer_received', 'Offer Received'),
-#         ('offer_accepted', 'Offer Accepted'),
-#         ('sold', 'Sold'),
-#         ('canceled', 'Canceled')
-#     ], default='new') 26334
+
+

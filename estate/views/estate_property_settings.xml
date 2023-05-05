@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Form View to edit data in a form-->
+    <record id="estate_property_type_view_form" model="ir.ui.view">
+        <field name="name">estate.property.type.view.form</field>
+        <field name="model">estate.property.type</field>
+        <field name="arch" type="xml">
+            <form string="PropertyType_Form" editable="bottom">
+                <sheet>
+                    <h1>
+                        <field name="property_type" widget="text_area" cols="50"/>
+                        <br/>
+                        <br/>
+                        <group>
+                            <field name="buyer"/>
+                            <field name="seller"/>
+                        </group>
+                    </h1>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree View to show all the data in tree wise-->
+    <record id="estate_property_type_view_tree" model="ir.ui.view">
+        <field name="name">estate.property.type.view.tree</field>
+        <field name="model">estate.property.type</field>
+        <field name="arch" type="xml">
+            <tree string="Property_type_Tree">
+                <field name="property_type"/>
+                <field name="buyer"/>
+                <field name="seller"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="estate_property_type_menu_action" model="ir.actions.act_window">
+        <field name="name">property Type</field>
+        <field name="res_model">estate.property.type</field>
+    </record>
+</odoo>

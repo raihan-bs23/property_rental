@@ -1,10 +1,11 @@
 {
-    'name':'Real Estate',
+    'name': 'Real Estate',
     'author': "Abu Raihan",
     'application': True,
-    'data' : [
+    'data': [
         'security/ir.model.access.csv',
         'views/estate_menus.xml',
         'views/estate_property_views.xml',
+        'views/estate_property_settings.xml',
     ]
 }
