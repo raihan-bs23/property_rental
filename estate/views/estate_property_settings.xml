@@ -38,4 +38,33 @@
         <field name="name">property Type</field>
         <field name="res_model">estate.property.type</field>
     </record>
+
+    <!-- Tree View to show all the data in tree wise-->
+    <record id="estate_property_tag_view_tree" model="ir.ui.view">
+        <field name="name">estate.property.tag.view.tree</field>
+        <field name="model">estate.property.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Property_tag_Tree">
+                <field name="tag_name"/>
+            </tree>
+        </field>
+    </record>
+    <!--    Form View to edit data in a form-->
+    <record id="estate_property_tag_view_form" model="ir.ui.view">
+        <field name="name">estate.property.tag.view.form</field>
+        <field name="model">estate.property.tag</field>
+        <field name="arch" type="xml">
+            <form string="PropertyTag_Form" editable="bottom">
+                <sheet>
+                    <group>
+                        <field name="tag_name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="estate_property_tag_menu_action" model="ir.actions.act_window">
+        <field name="name">property Tags</field>
+        <field name="res_model">estate.property.tag</field>
+    </record>
 </odoo>

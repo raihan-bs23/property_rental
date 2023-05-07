@@ -13,10 +13,4 @@ class RealEstatePropertyType(models.Model):
     ], default='house')
     buyer = fields.Char(string='Buyer Name')
     seller = fields.Char(string="Salesman", default=lambda self: self.env.user.name)
-
-    def name_get(self):
-        result = []
-        for record in self:
-            property_type = record.property_type
-            result.append((record.id, property_type))
-        return result
+    _rec_name = 'property_type'
