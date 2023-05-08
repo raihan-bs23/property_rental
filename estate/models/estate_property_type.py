@@ -11,6 +11,6 @@ class RealEstatePropertyType(models.Model):
         ('house', 'House'),
         ('apartment', 'Apartment')
     ], default='house')
-    buyer = fields.Char(string='Buyer Name')
-    seller = fields.Char(string="Salesman", default=lambda self: self.env.user.name)
+    buyer = fields.Many2one('res.partner')
+    seller = fields.Many2one('res.users', default=lambda self: self.env.user, readonly=True)
     _rec_name = 'property_type'
