@@ -2,6 +2,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import fields, models, tools
 from src.odoo.odoo import api
 from odoo.exceptions import UserError
+from src.odoo.odoo.exceptions import ValidationError
 
 
 class RealEstateProperties(models.Model):
@@ -37,12 +38,14 @@ class RealEstateProperties(models.Model):
     ], default='new')
     property_type_id = fields.Many2one("estate.property.type", string="Property Type")
     seller_id = fields.Many2one(string="Salesman", related="property_type_id.seller")
-    buyer_id = fields.Many2one(string="Buyer Name", related="property_type_id.buyer")
+    buyer_id = fields.Many2one('res.partner', string="Buyer Name", readonly=True)
     tag_id = fields.Many2many("estate.property.tag")
     offer_ids = fields.One2many('estate.property.offers', 'property_ids', string="Offers")
     total_area = fields.Integer(compute='_compute_total_area', string="Total Area", store=True)
     best_price = fields.Float(compute='_compute_best_price', string="Best Offer")
     state = fields.Char(string="Status", readonly=True)
+    offer_accept_id = fields.Many2one("estate.property.offers.accept.popup")
+
 
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
@@ -93,3 +96,15 @@ class RealEstateProperties(models.Model):
                     raise UserError("You have already Canceled !")
                 elif record.state == "SOLD":
                     raise UserError("Sold property cannot be Canceled !")
+
+    @api.constrains('expected_price')
+    def _check_expected_price(self):
+        for record in self:
+            if record.expected_price <= 0:
+                raise ValidationError("Expected Price must Should be Positive")
+
+    @api.constrains('selling_price')
+    def _check_selling_price(self):
+        for record in self:
+            if record.selling_price < 0:
+                raise ValidationError("Selling Price must Should be Positive")
