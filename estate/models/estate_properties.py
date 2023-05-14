@@ -1,14 +1,13 @@
 from dateutil.relativedelta import relativedelta
-from odoo import fields, models, tools
-from src.odoo.odoo import api
-from odoo.exceptions import UserError
+from odoo import fields, models, tools, api
+from odoo.exceptions import UserError, ValidationError
 
-from src.odoo.odoo.exceptions import ValidationError
 
 
 class RealEstateProperties(models.Model):
     _name = "estate.property"
     _description = "Estate Properties"
+    _order = 'id desc'
 
     name = fields.Char(string='Estate Name', required=True)
     description = fields.Text(string="description")
@@ -22,6 +21,7 @@ class RealEstateProperties(models.Model):
     facades = fields.Integer(string="Facades")
     garage = fields.Boolean(string="Have Garage ?")
     garden = fields.Boolean(string="Have Garden ?")
+
     garden_area = fields.Integer(string="Garden Area (sqm)")
     garden_orientation = fields.Selection(string="Garden Orientation Type", selection=[
         ('north', 'North'),
@@ -45,7 +45,6 @@ class RealEstateProperties(models.Model):
     total_area = fields.Integer(compute='_compute_total_area', string="Total Area", store=True)
     best_price = fields.Float(compute='_compute_best_price', string="Best Offer")
     state = fields.Char(string="Status", readonly=True)
-    offer_accept_id = fields.Many2one("estate.property.offers.accept.popup")
 
     # _sql_constraints = [
     #     ('positive_expected_price', 'CHECK(expected_price > 0)', 'Expected price must be strictly positive!'),
@@ -82,6 +81,7 @@ class RealEstateProperties(models.Model):
             print(state)
             if state is False:
                 record.state = "SOLD"
+                record.status = 'sold'
                 print(record.state)
             else:
                 if record.state == "SOLD":
@@ -95,6 +95,7 @@ class RealEstateProperties(models.Model):
             print(state)
             if state is False:
                 record.state = "Canceled"
+                record.status = 'canceled'
                 print(record.state)
             else:
                 if record.state == "Canceled":
@@ -106,7 +107,7 @@ class RealEstateProperties(models.Model):
     def _check_property_name(self):
         for record in self:
             lst = self.search([]).mapped('name')
-            var = lst[:-1]
+            var = lst[-1:]
             print(var)
             if record.name in var:
                 raise ValidationError("Property Name already exist !")
@@ -122,3 +123,20 @@ class RealEstateProperties(models.Model):
         for record in self:
             if record.selling_price < 0:
                 raise ValidationError("Selling Price must Should be Positive")
+
+    @api.constrains('offer_ids')
+    def offer_received(self):
+        for record in self:
+            offer_c = len(record.offer_ids)
+            print("length - ", offer_c)
+            if offer_c > 0:
+                print("offer recieved")
+                self.status = 'offer_received'
+            else:
+                print("New")
+                print(record.selling_price)
+                self.status = 'new'
+
+
+
+

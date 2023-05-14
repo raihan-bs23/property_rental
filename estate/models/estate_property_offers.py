@@ -1,13 +1,13 @@
 from dateutil.relativedelta import relativedelta
-from odoo import fields, models, tools
-
-from src.odoo.odoo import api
-from src.odoo.odoo.exceptions import ValidationError
+from odoo import fields, models, tools, http, api
+from odoo.exceptions import ValidationError
 
 
 class RealEstatePropertyOffers(models.Model):
     _name = 'estate.property.offers'
     _description = "This is Real Estate Property Offer Description"
+    _order = 'price desc'
+    _rec_name = ''
 
     price = fields.Float(default=0.0, string="Offered Price")
     status = fields.Selection(string="Offer Status", selection=[
@@ -19,6 +19,7 @@ class RealEstatePropertyOffers(models.Model):
     validity = fields.Integer(default=7, string="Validity Days", store=True)
     date_deadline = fields.Date(compute='_compute_date_validity', inverse='_inverse_date_deadline',
                                 string="Offer Deadline", store=True)
+    property_type_id = fields.Many2one(related='property_ids.property_type_id', string="Property Type", store=True)
 
     # _sql_constraints = [
     #     ('check_offered_price', 'CHECK(price > 0)', 'Offered Price must be Positive !')
@@ -53,9 +54,9 @@ class RealEstatePropertyOffers(models.Model):
                 raise ValidationError("Selling Price Cannot be less than 90% of expected price ")
             else:
                 record.status = "accepted"
+                record.property_ids.status = "offer_accepted"
                 record.property_ids.selling_price = record.price
                 record.property_ids.buyer_id = record.partner_id
-
 
     def property_offer_status_refuse(self):
         for record in self:
@@ -68,8 +69,3 @@ class RealEstatePropertyOffers(models.Model):
         for record in self:
             if record.price < 0:
                 raise ValidationError("Offered price must be a positive value !")
-
-    # @api.constrains('price')
-    # def _check_offered_price(self):
-    #     for record in self:
-

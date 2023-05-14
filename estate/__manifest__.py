@@ -1,6 +1,7 @@
 {
     'name': 'Real Estate',
     'author': "Abu Raihan",
+    'installable':True,
     'application': True,
     'data': [
         'security/ir.model.access.csv',

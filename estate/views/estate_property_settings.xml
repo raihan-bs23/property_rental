@@ -6,16 +6,33 @@
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <form string="PropertyType_Form" editable="bottom">
+
                 <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button class="oe_stat_button" type="object" name="show_all_offers"
+                                 icon="fa-usd">
+                            <field string="Offers" name="offer_count" widget="statinfo"/>
+                        </button>
+                    </div>
                     <h1>
-                        <field name="property_type" widget="text_area" cols="50"/>
-                        <br/>
-                        <br/>
-                        <group>
-                            <field name="buyer"/>
-                            <field name="seller"/>
-                        </group>
+                        <field name="property_type" widget="text_area" cols="50" />
                     </h1>
+                        <br/>
+                        <br/>
+                        <notebook>
+                            <page string="Properties">
+                                <field name="property_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="expected_price"/>
+                                        <field name="selling_price"/>
+                                        <field name="status"/>
+
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
                 </sheet>
             </form>
         </field>
@@ -26,6 +43,8 @@
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <tree string="Property_type_Tree">
+<!--                default_order="property_type asc"-->
+                <field name="type_sequence" widget="handle"/>
                 <field name="property_type"/>
                 <field name="buyer"/>
                 <field name="seller"/>
@@ -45,7 +64,9 @@
         <field name="model">estate.property.tag</field>
         <field name="arch" type="xml">
             <tree string="Property_tag_Tree">
+<!--                default_order="tag_name asc"-->
                 <field name="tag_name"/>
+                <field name="color" options="{'color_field': 'color'}"/>
             </tree>
         </field>
     </record>
@@ -58,11 +79,27 @@
                 <sheet>
                     <group>
                         <field name="tag_name"/>
+                        <field name="color" options="{'color_field': 'color'}"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
+<!--    tree view for estate property offers-->
+    <record model="ir.ui.view" id="estate_property_offers_tree_view">
+            <field name="name">estate.property.offers.tree</field>
+            <field name="model">estate.property.offers</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="status == 'accepted'" decoration-danger="status == 'refused'">
+                    <field name="price"/>
+                    <field name="status"/>
+                    <field name="partner_id"/>
+                    <field name="property_ids"/>
+                    <field name="validity"/>
+                    <field name="date_deadline"/>
+                </tree>
+            </field>
+        </record>
     <record id="estate_property_tag_menu_action" model="ir.actions.act_window">
         <field name="name">property Tags</field>
         <field name="res_model">estate.property.tag</field>
