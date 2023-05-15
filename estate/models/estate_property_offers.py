@@ -69,3 +69,13 @@ class RealEstatePropertyOffers(models.Model):
         for record in self:
             if record.price < 0:
                 raise ValidationError("Offered price must be a positive value !")
+
+    @api.constrains('price')
+    def _check_offered_price_less_t_highest(self):
+        for record in self:
+            lst = self.search([('property_ids', '=', self.property_ids.id)]).mapped('price')
+            new_lst = [x for x in lst if x != record.price]
+            gt = new_lst[0]
+            if record.price <= gt:
+                print(record.price)
+                raise ValidationError("Offered price can't be the same or lower than the current highest offer !")

@@ -46,15 +46,15 @@ class RealEstatePropertyType(models.Model):
             record.offer_count = len(record.offer_ids)
             print(record.offer_count)
 
-    def show_all_offers(self):
-        print("hello")
-        return {
-            'name': 'Offers',
-            'res_model': 'estate.property.offers',
-            'view_mode': 'tree,form',
-            'context': {},
-            'domain': [('property_type_id', '=', self.id)],
-            'target': 'current',
-            'type': 'ir.actions.act_window',
-
-        }
+    # def show_all_offers(self):
+    #     print("hello")
+    #     return {
+    #         'name': 'Offers',
+    #         'res_model': 'estate.property.offers',
+    #         'view_mode': 'tree,form',
+    #         'context': {},
+    #         'domain': [('property_type_id', '=', self.id)],
+    #         'target': 'current',
+    #         'type': 'ir.actions.act_window',
+    #
+    #     }

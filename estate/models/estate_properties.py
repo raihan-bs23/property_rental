@@ -38,7 +38,7 @@ class RealEstateProperties(models.Model):
         ('canceled', 'Canceled')
     ], default='new')
     property_type_id = fields.Many2one("estate.property.type", string="Property Type")
-    seller_id = fields.Many2one(string="Salesman", related="property_type_id.seller")
+    seller_id = fields.Many2one('res.users', default=lambda self: self.env.user, readonly=True)
     buyer_id = fields.Many2one('res.partner', string="Buyer Name", readonly=True)
     tag_id = fields.Many2many("estate.property.tag")
     offer_ids = fields.One2many('estate.property.offers', 'property_ids', string="Offers")
@@ -136,6 +136,12 @@ class RealEstateProperties(models.Model):
                 print("New")
                 print(record.selling_price)
                 self.status = 'new'
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_state_new_canceled(self):
+        for record in self:
+            if record.status in ['offer_received', 'offer_accepted', 'sold']:
+                raise ValidationError("This Property Can't be deleted! Because this property has dependencies.")
 
 
 
