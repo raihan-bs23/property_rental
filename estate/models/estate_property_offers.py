@@ -74,8 +74,20 @@ class RealEstatePropertyOffers(models.Model):
     def _check_offered_price_less_t_highest(self):
         for record in self:
             lst = self.search([('property_ids', '=', self.property_ids.id)]).mapped('price')
-            new_lst = [x for x in lst if x != record.price]
-            gt = new_lst[0]
-            if record.price <= gt:
-                print(record.price)
-                raise ValidationError("Offered price can't be the same or lower than the current highest offer !")
+            print(lst)
+            new_lst = []
+            count = 0
+            for x in lst:
+                if x != record.price:
+                    new_lst.append(x)
+                else:
+                    count = count + 1
+            if len(new_lst) != 0:
+                gt = new_lst[0]
+            if len(lst) == 1:
+                pass
+            else:
+                if count > 1:
+                    raise ValidationError("Offered price can't be the same or lower than the current highest offer !")
+                elif record.price <= gt:
+                    raise ValidationError("Offered price can't be the same or lower than the current highest offer !")
