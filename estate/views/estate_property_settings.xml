@@ -41,7 +41,6 @@
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <tree string="Property_type_Tree">
-<!--                default_order="property_type asc"-->
                 <field name="type_sequence" widget="handle"/>
                 <field name="property_type"/>
                 <field name="buyer"/>

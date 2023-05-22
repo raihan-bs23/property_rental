@@ -29,14 +29,14 @@ class RealEstatePropertyOffers(models.Model):
     def _compute_date_validity(self):
         for record in self:
             if record.create_date:
-                record.date_deadline = fields.Date.from_string(record.create_date) + relativedelta(days=record.validity)
+                record.date_deadline = fields.Date.add(self.create_date, days=record.validity)
             else:
                 record.date_deadline = fields.Date.today() + relativedelta(days=record.validity)
 
-    # def _inverse_date_validation(self):
-    #     for record in self:
-    #         if record.date_deadline:
-    #             record.validity = fields.Date.to_string(record.date_deadline - record.create_date)
+    def _inverse_date_validation(self):
+        for record in self:
+            if record.date_deadline:
+                record.validity = fields.Date.add(days=record.date_deadline - record.create_date)
 
     def _inverse_date_deadline(self):
         for record in self:
@@ -61,33 +61,17 @@ class RealEstatePropertyOffers(models.Model):
     def property_offer_status_refuse(self):
         for record in self:
             record.status = "refused"
-            record.property_ids.selling_price = 0.0
-            record.property_ids.buyer_id = None
 
-    @api.constrains('price')
+    @api.onchange('price')
     def _check_offered_price(self):
         for record in self:
             if record.price < 0:
                 raise ValidationError("Offered price must be a positive value !")
 
-    @api.constrains('price')
-    def _check_offered_price_less_t_highest(self):
-        for record in self:
-            lst = self.search([('property_ids', '=', self.property_ids.id)]).mapped('price')
-            print(lst)
-            new_lst = []
-            count = 0
-            for x in lst:
-                if x != record.price:
-                    new_lst.append(x)
-                else:
-                    count = count + 1
-            if len(new_lst) != 0:
-                gt = new_lst[0]
-            if len(lst) == 1:
-                pass
-            else:
-                if count > 1:
-                    raise ValidationError("Offered price can't be the same or lower than the current highest offer !")
-                elif record.price <= gt:
-                    raise ValidationError("Offered price can't be the same or lower than the current highest offer !")
+    @api.model
+    def create(self, vals):
+        if 'price' in vals and 'property_ids' in vals:
+            existing_offers = self.search([('property_ids', '=', vals['property_ids'])])
+            if existing_offers and vals['price'] <= max(existing_offers.mapped('price')):
+                raise ValidationError("Offered price can't be equal or lower than an existing offer!")
+        return super(RealEstatePropertyOffers, self).create(vals)

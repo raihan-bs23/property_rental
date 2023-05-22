@@ -1,8 +1,4 @@
-from odoo import fields, models, tools
-
-from src.odoo.odoo import api
-from src.odoo.odoo.exceptions import ValidationError
-
+from odoo import fields, models, tools, api
 
 class RealEstatePropertyType(models.Model):
     _name = 'estate.property.type'
@@ -27,18 +23,6 @@ class RealEstatePropertyType(models.Model):
         ('unique_property_type', 'UNIQUE(property_type)', 'Property Type must be Unique')
     ]
 
-    # @api.constrains('property_type')
-    # def _check_property_type_duplication(self):
-    #     for record in self:
-    #         type_house = 'house'
-    #         type_apartment = 'apartment'
-    #         if type_house in record.property_type:
-    #             print(record.property_type)
-    #             raise ValidationError("Property Type: House exist !")
-    #         elif type_apartment in record.property_type:
-    #             print(record.property_type)
-    #             raise ValidationError("Property Type: Apartment exist !")
-
     @api.depends('offer_ids')
     def _compute_offer_counts(self):
         for record in self:
@@ -46,15 +30,3 @@ class RealEstatePropertyType(models.Model):
             record.offer_count = len(record.offer_ids)
             print(record.offer_count)
 
-    # def show_all_offers(self):
-    #     print("hello")
-    #     return {
-    #         'name': 'Offers',
-    #         'res_model': 'estate.property.offers',
-    #         'view_mode': 'tree,form',
-    #         'context': {},
-    #         'domain': [('property_type_id', '=', self.id)],
-    #         'target': 'current',
-    #         'type': 'ir.actions.act_window',
-    #
-    #     }

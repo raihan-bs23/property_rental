@@ -10,5 +10,7 @@
                   action="estate_property_type_menu_action"/>
         <menuitem id="estate_property_tag_menu"
                   action="estate_property_tag_menu_action"/>
+        <menuitem id="multi_view_menu"
+                  action="multi_view_menu_action"/>
     </menuitem>
 </odoo>

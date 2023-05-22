@@ -3,7 +3,6 @@ from odoo import fields, models, tools, api
 from odoo.exceptions import UserError, ValidationError
 
 
-
 class RealEstateProperties(models.Model):
     _name = "estate.property"
     _description = "Estate Properties"
@@ -21,7 +20,6 @@ class RealEstateProperties(models.Model):
     facades = fields.Integer(string="Facades")
     garage = fields.Boolean(string="Have Garage ?")
     garden = fields.Boolean(string="Have Garden ?")
-
     garden_area = fields.Integer(string="Garden Area (sqm)")
     garden_orientation = fields.Selection(string="Garden Orientation Type", selection=[
         ('north', 'North'),
@@ -44,13 +42,14 @@ class RealEstateProperties(models.Model):
     offer_ids = fields.One2many('estate.property.offers', 'property_ids', string="Offers")
     total_area = fields.Integer(compute='_compute_total_area', string="Total Area", store=True)
     best_price = fields.Float(compute='_compute_best_price', string="Best Offer")
-    state = fields.Char(string="Status", readonly=True)
+    total_area_multi = fields.Float(string="Multiple Total", compute='_compute_multiple_total_area')
 
-    # _sql_constraints = [
-    #     ('positive_expected_price', 'CHECK(expected_price > 0)', 'Expected price must be strictly positive!'),
-    #     ('positive_selling_price', 'CHECK(selling_price >= 0)', 'Selling price must be positive!'),
-    #     ('unique_property_name', 'UNIQUE(name)', 'Property name must be unique!'),
-    # ]
+    _sql_constraints = [
+        ('unique_property_name', 'UNIQUE(name)', 'Property name already exists!'),
+        ('check_expected_price', 'CHECK(expected_price >= 0.0 OR expected_price IS NULL)',
+         'Expected price must be non-negative!'),
+    ]
+
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
         for record in self:
@@ -60,7 +59,9 @@ class RealEstateProperties(models.Model):
     def _compute_best_price(self):
         for record in self:
             prices = record.offer_ids.mapped('price')
-            if prices:
+            if 0.0 in prices:
+                raise ValidationError("Offered Price Can't be Zero!")
+            elif prices:
                 record.best_price = max(prices)
             else:
                 record.best_price = 0.0
@@ -68,7 +69,6 @@ class RealEstateProperties(models.Model):
     @api.onchange('garden')
     def _onchange_garden(self):
         if self.garden:
-            print(self.garden)
             self.garden_area = 10
             self.garden_orientation = 'north'
         else:
@@ -77,64 +77,21 @@ class RealEstateProperties(models.Model):
 
     def property_state_type_sold(self):
         for record in self:
-            state = self.state
-            print(state)
-            if state is False:
-                record.state = "SOLD"
+            if record.status != 'sold' and record.status != 'canceled':
                 record.status = 'sold'
-                print(record.state)
-            else:
-                if record.state == "SOLD":
-                    raise UserError("You have already Sold !")
-                elif record.state == "Canceled":
-                    raise UserError("Canceled property cannot be Sold !")
 
     def property_state_type_canceled(self):
         for record in self:
-            state = self.state
-            print(state)
-            if state is False:
-                record.state = "Canceled"
+            if record.status != 'sold' and record.status != 'canceled':
                 record.status = 'canceled'
-                print(record.state)
-            else:
-                if record.state == "Canceled":
-                    raise UserError("You have already Canceled !")
-                elif record.state == "SOLD":
-                    raise UserError("Sold property cannot be Canceled !")
-
-    @api.constrains('name')
-    def _check_property_name(self):
-        for record in self:
-            lst = self.search([]).mapped('name')
-            var = lst[-1:]
-            print(var)
-            if record.name in var:
-                raise ValidationError("Property Name already exist !")
-
-    @api.constrains('expected_price')
-    def _check_expected_price(self):
-        for record in self:
-            if record.expected_price <= 0:
-                raise ValidationError("Expected Price must Should be Positive")
-
-    @api.constrains('selling_price')
-    def _check_selling_price(self):
-        for record in self:
-            if record.selling_price < 0:
-                raise ValidationError("Selling Price must Should be Positive")
 
     @api.constrains('offer_ids')
     def offer_received(self):
         for record in self:
             offer_c = len(record.offer_ids)
-            print("length - ", offer_c)
             if offer_c > 0:
-                print("offer recieved")
                 self.status = 'offer_received'
             else:
-                print("New")
-                print(record.selling_price)
                 self.status = 'new'
 
     @api.ondelete(at_uninstall=False)
@@ -142,7 +99,3 @@ class RealEstateProperties(models.Model):
         for record in self:
             if record.status in ['offer_received', 'offer_accepted', 'sold']:
                 raise ValidationError("This Property Can't be deleted! Because this property has dependencies.")
-
-
-
-
