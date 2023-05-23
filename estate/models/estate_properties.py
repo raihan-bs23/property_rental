@@ -99,3 +99,12 @@ class RealEstateProperties(models.Model):
         for record in self:
             if record.status in ['offer_received', 'offer_accepted', 'sold']:
                 raise ValidationError("This Property Can't be deleted! Because this property has dependencies.")
+
+    @api.constrains('selling_price', 'expected_price')
+    def check_selling_price(self):
+        for record in self:
+            exp = record.expected_price * .9
+            if record.status not in ['offer_received', 'offer_accepted']:
+                pass
+            elif record.selling_price < exp:
+                raise ValidationError("Selling Price Cannot be less than 90% of expected price ")
