@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Tree View to show all the data in tree wise-->
+    <record id="estate_property_view_tree" model="ir.ui.view">
+        <field name="name">estate.property.view.tree</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <tree string="Property_Tree" decoration-success="status == 'offer_received' or status == 'offer_accepted'"
+                  decoration-bf="status == 'offer_accepted'"
+                  decoration-muted="status == 'sold'" >
+                     <header>
+                    <button name="property_state_type_sold" type="object" string="SOLD"/>
+                </header>
+                <field name="name"/>
+                <field name="property_type_id"/>
+                <field name="tag_id" widget="many2many_tags" placeholder="Select property tag"
+                       options="{'color_field': 'color'}"/>
+                <field name="expected_price"/>
+                <field name="postcode"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="facades"/>
+                <field name="garage"/>
+                <field name="garden"/>
+                <field name="garden_area"/>
+                <field name="garden_orientation"/>
+                <field name="active"/>
+                <field name="status"/>
+                <field name="seller_id"/>
+            </tree>
+        </field>
+    </record>
     <!--    Form View to edit data in a form-->
     <record id="estate_property_view_form" model="ir.ui.view">
         <field name="name">estate.property.view.form</field>
@@ -49,6 +79,7 @@
                                     <field name="garden_orientation" attrs="{'invisible': [('garden', '=', False)]}"/>
                                     <field name="active"/>
                                     <field name="total_area"/>
+<!--                                    <field name="demo" password="True" widget="password"/>-->
                                 </group>
                             </page>
                             <page string="Offers">
@@ -87,36 +118,49 @@
             </form>
         </field>
     </record>
-    <!-- Tree View to show all the data in tree wise-->
-    <record id="estate_property_view_tree" model="ir.ui.view">
-        <field name="name">estate.property.view.tree</field>
+    <!--     Kanban View to show all the data in tree wise-->
+    <record id="estate_property_view_kanban" model="ir.ui.view">
+        <field name="name">estate.property.view.kanban</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Property_Tree" decoration-success="status == 'offer_received' or status == 'offer_accepted'"
-                  decoration-bf="status == 'offer_accepted'"
-                  decoration-muted="status == 'sold'" >
-                     <header>
-                    <button name="property_state_type_sold" type="object" string="SOLD"/>
-                </header>
-                <field name="name"/>
-                <field name="property_type_id"/>
-                <field name="tag_id" widget="many2many_tags" placeholder="Select property tag"
-                       options="{'color_field': 'color'}"/>
-                <field name="expected_price"/>
-                <field name="postcode"/>
-                <field name="bedrooms"/>
-                <field name="living_area"/>
-                <field name="facades"/>
-                <field name="garage"/>
-                <field name="garden"/>
-                <field name="garden_area"/>
-                <field name="garden_orientation"/>
-                <field name="active"/>
+            <kanban default_group_by="property_type_id" group_create="False" records_draggable="False">
                 <field name="status"/>
-                <field name="seller_id"/>
-            </tree>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
+                            <strong>
+                                <h4>
+                                    <field name="name"/>
+                                </h4>
+                            </strong>
+                            <div>
+                                <strong>
+                                    <span>Status:</span>
+                                </strong>
+                                <field name="status" />
+                            </div>
+                            <span>Expected Price : </span>
+                            <field name="expected_price"/> <br/>
+                            <t t-if="record.status.raw_value == 'offer_received'">
+                                <span>Best Offer :</span>
+                                <field name="best_price"/>
+                            </t>
+                            <t t-if="record.status.raw_value == 'offer_accepted'">
+                                <span>Best Offer :</span>
+                                <field name="best_price"/> <br/>
+                                <span>Selling Price :</span>
+                                <field name="selling_price"/>
+                            </t>
+                            <field name="tag_id" widget="many2many_tags" placeholder="Select property tag"
+                                   options="{'color_field': 'color'}"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
+
     <!--Search View-->
     <record id="estate_property_view_search" model="ir.ui.view">
         <field name="name">estate.property.view.search</field>
@@ -153,6 +197,11 @@
         <field name="name">property</field>
         <field name="res_model">estate.property</field>
         <field name="context">{'search_default_status_check': True}</field>
+        <field name="view_mode">form,tree,kanban</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'sequence':2, 'view_mode': 'tree', 'view_id': ref('estate.estate_property_view_tree')}),
+                        (0, 0, {'sequence':3, 'view_mode': 'kanban', 'view_id': ref('estate.estate_property_view_kanban')}),
+                        (0, 0, {'sequence':5, 'view_mode': 'form', 'view_id': ref('estate.estate_property_view_form')})]"/>
     </record>
 
 </odoo>

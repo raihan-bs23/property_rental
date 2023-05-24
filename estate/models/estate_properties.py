@@ -42,7 +42,7 @@ class RealEstateProperties(models.Model):
     offer_ids = fields.One2many('estate.property.offers', 'property_ids', string="Offers")
     total_area = fields.Integer(compute='_compute_total_area', string="Total Area", store=True)
     best_price = fields.Float(compute='_compute_best_price', string="Best Offer")
-    total_area_multi = fields.Float(string="Multiple Total", compute='_compute_multiple_total_area')
+    color = fields.Integer(string="color", compute='_compute_color')
 
     _sql_constraints = [
         ('unique_property_name', 'UNIQUE(name)', 'Property name already exists!'),
@@ -50,6 +50,17 @@ class RealEstateProperties(models.Model):
          'Expected price must be non-negative!'),
     ]
 
+    @api.depends('status')
+    def _compute_color(self):
+        for record in self:
+            if record.status == 'new':
+                record.color = 2
+            elif record.status == 'offer_received':
+                record.color = 5
+            elif record.status == 'offer_accepted':
+                record.color = 10
+            else:
+                record.color = 1
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
         for record in self:
