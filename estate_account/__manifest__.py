@@ -6,5 +6,6 @@
     'sequence': -99,
     'depends': ['estate', 'account'],
     'data': [
+        'report/inherited_report_view.xml',
     ]
 }

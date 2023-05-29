@@ -25,7 +25,7 @@ class EstateProperty(models.Model):
                                 "name": "Administrative fees",
                                 "quantity": 1.0,
                                 "price_unit": 100.0,
-                            }),
+                            }),rec
                     ]
                 })
             rec.move_id = move

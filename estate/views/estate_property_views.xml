@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <tree string="Property_Tree" decoration-success="status == 'offer_received' or status == 'offer_accepted'"
                   decoration-bf="status == 'offer_accepted'"
-                  decoration-muted="status == 'sold'" >
-                     <header>
+                  decoration-muted="status == 'sold'">
+                <header>
                     <button name="property_state_type_sold" type="object" string="SOLD"/>
                 </header>
                 <field name="name"/>
@@ -47,7 +47,7 @@
                 </header>
                 <sheet>
                     <h1>
-                        <field name="name" widget="text_area" placeholder="Enter property name" cols="50" />
+                        <field name="name" widget="text_area" placeholder="Enter property name" cols="50"/>
                         <br/>
                         <br/>
                     </h1>
@@ -79,7 +79,7 @@
                                     <field name="garden_orientation" attrs="{'invisible': [('garden', '=', False)]}"/>
                                     <field name="active"/>
                                     <field name="total_area"/>
-<!--                                    <field name="demo" password="True" widget="password"/>-->
+                                    <!--                                    <field name="demo" password="True" widget="password"/>-->
                                 </group>
                             </page>
                             <page string="Offers">
@@ -138,20 +138,22 @@
                                 <strong>
                                     <span>Status:</span>
                                 </strong>
-                                <field name="status" />
+                                <field name="status"/>
                             </div>
-                            <span>Expected Price : </span>
-                            <field name="expected_price"/> <br/>
-                            <t t-if="record.status.raw_value == 'offer_received'">
+                            <span>Expected Price :</span>
+                            <field name="expected_price"/>
+                            <br/>
+                            <p t-if="record.status.raw_value == 'offer_received'">
                                 <span>Best Offer :</span>
                                 <field name="best_price"/>
-                            </t>
-                            <t t-if="record.status.raw_value == 'offer_accepted'">
+                            </p>
+                            <p t-elif="record.status.raw_value == 'offer_accepted'">
                                 <span>Best Offer :</span>
-                                <field name="best_price"/> <br/>
+                                <field name="best_price"/>
+                                <br/>
                                 <span>Selling Price :</span>
                                 <field name="selling_price"/>
-                            </t>
+                            </p>
                             <field name="tag_id" widget="many2many_tags" placeholder="Select property tag"
                                    options="{'color_field': 'color'}"/>
                         </div>
