@@ -4,6 +4,7 @@
     'installable': True,
     'application': True,
     'sequence': -100,
+    'depends': ['report_xlsx'],
     'data': [
         'security/ir.model.access.csv',
         'views/estate_property_settings.xml',

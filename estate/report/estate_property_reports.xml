@@ -40,4 +40,15 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="property_report_xlsx" model="ir.actions.report">
+        <field name="name">Sale Report(xlsx)</field>
+        <field name="model">estate.property</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">estate.property_report_xlsx</field>
+        <field name="report_file">estate.property_report_xlsx</field>
+        <field name="print_report_name">'Estate Property(xlsx) - %s' % (object.name or 'Attendee').replace('/','')</field>
+        <field name="binding_model_id" ref="model_estate_property"/>
+        <field name="binding_type">report</field>
+    </record>
+
 </odoo>

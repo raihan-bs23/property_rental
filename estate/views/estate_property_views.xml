@@ -150,7 +150,8 @@
                             <p t-elif="record.status.raw_value == 'offer_accepted'">
                                 <span>Best Offer :</span>
                                 <field name="best_price"/>
-                                <br/>
+                            </p>
+                            <p t-elif="record.status.raw_value == 'sold'">
                                 <span>Selling Price :</span>
                                 <field name="selling_price"/>
                             </p>
