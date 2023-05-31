@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View to show all the data in tree wise-->
+    <record id="rental_property_type_view_tree" model="ir.ui.view">
+        <field name="name">rental.property.type.view.tree</field>
+        <field name="model">rental.property.type</field>
+        <field name="arch" type="xml">
+            <tree string="Property_Tree">
+                <field name="property_type"/>
+                <field name="color" options="{'color_field': 'color'}"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    Form View to edit data in a form-->
+    <record id="rental_property_type_view_form" model="ir.ui.view">
+        <field name="name">rental.property.type.view.form</field>
+        <field name="model">rental.property.type</field>
+        <field name="arch" type="xml">
+            <form string="Rental_Property_Form" editable="bottom">
+                <sheet>
+                    <h1>
+                        <field name="property_type" widget="text_area" placeholder="Enter property type" cols="50"/>
+                        <field name="color" options="{'color_field': 'color'}"/>
+                    </h1>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="property_type_model_action" model="ir.actions.act_window">
+        <field name="name">Property Type</field>
+        <field name="res_model">rental.property.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'sequence':2, 'view_mode': 'tree', 'view_id': ref('property_rental.rental_property_type_view_tree')}),
+                        (0, 0, {'sequence':3, 'view_mode': 'form', 'view_id': ref('property_rental.rental_property_type_view_form')})]"/>
+    </record>
+
+</odoo>
