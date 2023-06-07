@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--    kanban view for estate property offers-->
+    <record model="ir.ui.view" id="tenant_profile_kanban_view">
+        <field name="name">tenant.profile.kanban.view</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                            <field name="image_1920" class="o_kanban_image_fill_left d-block"
+                                   widget="background_image" options="{'zoom': true, 'zoom_delay': 1000}"/>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <h3>
+                                        <field name="name"/>
+                                    </h3>
+                                </strong>
+                                <strong>
+                                    <span>Email:</span>
+                                </strong>
+                                <field name="login"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--    Form View to edit data in a form-->
+    <record id="tenant_profile_form_view" model="ir.ui.view">
+        <field name="name">tenant.profile.form.view</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <form string="Tenant Profile" editable="bottom">
+                <sheet>
+                    <field name="id" invisible="1"/>
+                    <div class="alert alert-info text-center mb-3" attrs="{'invisible': [('id', '&gt;', 0)]}"
+                         role="alert">
+                        You are inviting a new user.
+                    </div>
+                    <div name="button_box" class="oe_button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="test_tenant" string="Test"
+                                icon="fa-money">
+                        </button>
+                    </div>
+                    <field name="avatar_128" invisible="1"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                           options="{&quot;zoom&quot;: true, &quot;preview_image&quot;: &quot;avatar_128&quot;}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. John Doe" required="1"/>
+                        </h1>
+                        <field name="email" invisible="1"/>
+                        <label for="login" string="Email Address"/>
+                        <h2>
+                            <field name="login" placeholder="e.g. email@yourcompany.com"/>
+                        </h2>
+                        <label for="company_id" groups="base.group_multi_company"/>
+                        <field name="company_id" context="{'user_preference': 0}" groups="base.group_multi_company"/>
+                    </div>
+                    <group name="phone_numbers">
+                        <field name="phone" widget="phone"/>
+                        <field name="mobile" widget="phone"/>
+                    </group>
+                    <br/>
+                    <notebook colspan="4">
+                        <page string="Offers Made">
+                            <field name="offer_ids">
+                                <tree string="Properties">
+                                    <field name="property_ids"/>
+                                    <field name="rental_type"/>
+                                    <field name="rental_duration"/>
+                                    <field name="total_expected_rent"/>
+                                    <field name="price"/>
+                                    <field name="partner_id"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Rented Properties">
+
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="rental_property_tenant_model_action" model="ir.actions.act_window">
+        <field name="name">Tenant</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'sequence':3, 'view_mode': 'kanban', 'view_id': ref('property_rental.tenant_profile_kanban_view')}),
+                        (0, 0, {'sequence':5, 'view_mode': 'form', 'view_id': ref('property_rental.tenant_profile_form_view')})]"/>
+    </record>
+
+</odoo>

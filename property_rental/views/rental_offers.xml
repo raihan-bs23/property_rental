@@ -65,6 +65,24 @@
         </field>
     </record>
 
+    <!--    Form View to edit data in a form-->
+    <record id="confirm_rent_to_tenant_form" model="ir.ui.view">
+        <field name="name">confirm.rent.to.tenant.form</field>
+        <field name="model">property.details</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Rent" editable="bottom">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="rented_date"/>
+                            <field name="rental_duration"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <record id="rental_offers_model_action" model="ir.actions.act_window">
         <field name="name">Rental Offers</field>
         <field name="res_model">rental.offers</field>
@@ -79,5 +97,14 @@
         <field name="target">new</field>
         <field name="view_ids" eval="[(5, 0, 0),
                         (0, 0, {'sequence':3, 'view_mode': 'form', 'view_id': ref('property_rental.rental_offers_form_view')})]"/>
+    </record>
+
+    <record id="confirm_rent_model_action_tenant" model="ir.actions.act_window">
+        <field name="name">Confirm Rent</field>
+        <field name="res_model">property.details</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'sequence':2, 'view_mode': 'form', 'view_id': ref('property_rental.confirm_rent_to_tenant_form')})]"/>
     </record>
 </odoo>

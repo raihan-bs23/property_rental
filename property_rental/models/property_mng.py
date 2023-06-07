@@ -25,9 +25,11 @@ class PropertyDetails(models.Model):
     image = fields.Image("Image")
     date_availability = fields.Date(string="Available From",
                                     default=lambda self: fields.Date.today() + relativedelta(months=1))
+
     rented_date = fields.Date(string="Rented Date")
     rented_month = fields.Integer("No. of month")
     rented_till = fields.Date(string="Rented Till")
+
     garden_orientation = fields.Selection(string="Garden Orientation Type", selection=[
         ('north', 'North'),
         ('south', 'South'),
@@ -57,8 +59,8 @@ class PropertyDetails(models.Model):
     offer_ids = fields.One2many('rental.offers', 'property_ids', string="Offers", tracking=True)
     offer_partner = fields.Many2one(related='offer_ids.partner_id', string="Offer Partner", readonly=True)
     current_user = fields.Many2one('res.users', compute='_get_current_user')
-    print(current_user)
     offer_status = fields.Selection(related='offer_ids.status', string="Offer Status", readonly=True, store=True)
+    renter = fields.Char(string="Property Renter")
 
     offer_count = fields.Integer(compute='_compute_offer_counts')
     sales_man = fields.Many2one('res.users', default=lambda self: self.env.user.id, readonly=True)
@@ -96,22 +98,28 @@ class PropertyDetails(models.Model):
 
     def property_offer_payment_confirm(self):
         for record in self:
-            record.status = 'reserved'
-            record.offer_status = ''
-            record.sales_man.notify_success(title="Good News !",
-                                             message=f'{record.offer_ids.partner_id} Has confirmed the payment !!',
-                                             sticky=True)
+            if record.current_user == record.offer_partner:
+                print("True")
+                record.status = 'reserved'
+                record.renter = record.current_user.name
+                record.offer_status = ''
+                record.sales_man.notify_success(title="Good News!",
+                                                message=f'{record.offer_partner.name} has confirmed the payment!!',
+                                                sticky=True)
+            else:
+                raise ValidationError("You are not allowed to do this !!")
 
-    @api.constrains('offer_ids')
+    @api.constrains('offer_ids', 'offer_count')
     def _compute_offer_counts(self):
         for record in self:
             print(record.status)
+            for i in record.offer_partner:
+                print("Offer Partner ===", i.name)
             record.offer_count = len(record.offer_ids)
-            if record.offer_count > 0:
+            if record.status == 'available' and record.offer_count > 0:
                 print("========", record.status)
-                self.status = 'offer_received'
-            else:
-                self.status = 'available'
-
-
-
+                record.status = 'offer_received'
+            elif record.status == 'offer_received' or record.status == 'available':
+                record.renter = ''
+            elif record.offer_count == 0:
+                record.status = 'available'
