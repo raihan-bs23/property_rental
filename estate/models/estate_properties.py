@@ -61,6 +61,7 @@ class RealEstateProperties(models.Model):
                 record.color = 10
             else:
                 record.color = 1
+
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
         for record in self:

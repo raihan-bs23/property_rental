@@ -6,6 +6,17 @@ access_rental_property_type_owner,access_rental_property_type_owner,model_rental
 access_rental_property_tag_owner,access_rental_property_tag_owner,model_rental_property_tag,property_rental_owner,1,1,1,0
 
 
-access_rental_property_tenant,access_rental_property_tenant,model_property_details,property_rental_tenant,1,0,0,0
-access_rental_property_type,access_rental_property_type,model_rental_property_type,property_rental_tenant,1,0,0,0
-access_rental_property_tag,access_rental_property_tag,model_rental_property_tag,property_rental_tenant,1,0,0,0
+
+access_rental_property_tenant,access_rental_property_tenant,model_property_details,property_rental_tenant,1,1,0,0
+access_rental_property_type_tenant,access_rental_property_type,model_rental_property_type,property_rental_tenant,1,0,0,0
+access_rental_property_tag_tenant,access_rental_property_tag,model_rental_property_tag,property_rental_tenant,1,0,0,0
+
+
+
+access_rental_property_offers,access_rental_property_offers,model_rental_offers,,1,1,1,0
+
+
+
+
+
+

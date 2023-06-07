@@ -10,7 +10,6 @@
                 <field name="property_tag_ids" widget="many2many_tags" placeholder="Select property tag"
                        options="{'color_field': 'color'}"/>
                 <field name="postcode"/>
-                <field name="expected_rent_price"/>
                 <field name="bedrooms"/>
                 <field name="living_area"/>
                 <field name="property_type_ids" widget="many2many_tags" placeholder="Select property type"
@@ -28,12 +27,29 @@
         <field name="name">rental.property.view.form</field>
         <field name="model">property.details</field>
         <field name="arch" type="xml">
-            <form string="Rental_Property_Form" editable="bottom">
+            <form string="Rental_Property_Form">
+                <header>
+                    <field name="offer_status" invisible="1"/>
+                    <field name="offer_partner" invisible="1"/>
+                    <field name="current_user" invisible="1"/>
+                    <button name="property_offer_payment_confirm" type="object" string="Confirm Payment"
+                            icon="fa-check" confirm="Are you sure to confirm payment ?"
+                            attrs="{'invisible': [('offer_partner', '!=', 'current_user'),('offer_status', '!=', 'accepted')]}"/>
+
+                    <field name="status" widget="statusbar"/>
+                </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <!--                        <button name="open_assignation_logs" type="object" class="oe_stat_button" icon="fa-history">-->
-                        <!--                            <field name="property_type_ids" widget="statinfo" string="Drivers History"/>-->
-                        <!--                        </button>-->
+                    <div name="button_box" class="oe_button_box">
+                        <button class="oe_stat_button" type="action"
+                                name="%(property_rental.rental_offers_model_action)d"
+                                icon="fa-money" groups="property_rental.property_rental_owner">
+                            <field string="Offers" name="offer_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="action" string="Add Offers"
+                                name="%(property_rental.add_offers_model_action_tenant)d"
+                                icon="fa-plus" context="{'default_property_ids': active_id}"
+                                groups="property_rental.property_rental_tenant">
+                        </button>
                     </div>
                     <h1>
                         <field name="property_name" widget="text_area" placeholder="Enter property name" cols="50"/>
@@ -47,9 +63,9 @@
                             <field name="postcode"/>
                             <field name="address"/>
                             <field name="property_condition"/>
+                            <field name="date_availability"/>
                         </group>
                         <group>
-                            <field name="expected_rent_price"/>
                             <field name="rented_price"/>
                             <field name="property_type_ids" widget="many2many_tags" placeholder="Select property type"
                                    options="{'color_field': 'color'}"/>
@@ -70,6 +86,30 @@
                                     <field name="active"/>
                                 </group>
                             </page>
+                            <page string="Offers" groups="property_rental.property_rental_tenant">
+                                <field name="offer_ids"
+                                       attrs="{'readonly': [('status', 'in', ['offer_accepted', 'sold', 'canceled'])]}">
+                                    <tree string="Property Offers" editable="button"
+                                          decoration-success="status == 'accepted'"
+                                          decoration-danger="status == 'refused'">
+                                        <field name="rental_type"/>
+                                        <field name="rental_duration"/>
+                                        <field name="total_expected_rent"/>
+                                        <field name="price"/>
+                                        <field name="partner_id"/>
+                                        <field name="validity"/>
+                                        <field name="date_deadline"/>
+                                        <field name="status"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Price Plan">
+                                <group>
+                                    <field name="weekly_rent"/>
+                                    <field name="monthly_rent"/>
+                                    <field name="yearly_rent"/>
+                                </group>
+                            </page>
                             <page string="Others">
                                 <group>
                                     <field name="sales_man"/>
@@ -78,6 +118,11 @@
                         </notebook>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -111,13 +156,13 @@
                                 <br/>
                                 <strong>
                                     <span>Expected Rent:
-                                        <field name="expected_rent_price"/>
-                                        BDT
+                                        See price plan
                                     </span>
                                 </strong>
                                 <span>
                                     <br/>
-                                    <field name="property_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="property_tag_ids" widget="many2many_tags"
+                                           options="{'color_field': 'color'}"/>
                                 </span>
                             </div>
                         </div>

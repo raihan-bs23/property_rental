@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    tree view for estate property offers-->
+    <record model="ir.ui.view" id="rental_offers_tree_view">
+        <field name="name">rental.property.offers.tree</field>
+        <field name="model">rental.offers</field>
+        <!--        <field name="groups_id" eval="[(4, ref('property_rental.property_rental_owner'))]"/>-->
+        <field name="arch" type="xml">
+            <tree decoration-success="status == 'accepted'"
+                  decoration-danger="status == 'refused'">
+                <field name="rental_type"/>
+                <field name="rental_duration"/>
+                <field name="total_expected_rent"/>
+                <field name="price"/>
+                <field name="partner_id"/>
+                <field name="validity"/>
+                <field name="date_deadline"/>
+                <button name="property_offer_status_accept" type="object"
+                        string="Accept" icon="fa-check"
+                        attrs="{ 'invisible': ['|', ('status', '=', 'accepted'), ('status', '=', 'refused')] }"
+                        confirm="Are You Sure to Accept this offer ?"/>
+                <button name="property_offer_status_wishlist" type="object" string="Wishlist"
+                        icon="fa-umbrella"
+                        attrs="{ 'invisible': ['|', ('status', '=', 'accepted'),('status', '=', 'refused')] }"
+                        confirm="Are You Sure to put this offers it in wishlist ?"/>
+                <button name="property_offer_status_refuse" type="object" string="Refuse"
+                        icon="fa-times"
+                        attrs="{ 'invisible': ['|', ('status', '=', 'accepted'),('status', '=', 'refused')] }"
+                        confirm="Are You Sure to Refuse this offer ?"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    Form View to edit data in a form-->
+    <record id="rental_offers_form_view" model="ir.ui.view">
+        <field name="name">rental.offers.form</field>
+        <field name="model">rental.offers</field>
+        <field name="arch" type="xml">
+            <form string="Rental_Property_Form" editable="bottom">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="rental_type"/>
+                            <field name="rental_duration"/>
+                            <field name="partner_id"/>
+                            <field name="property_ids"/>
+                        </group>
+                        <group>
+                            <field name="weekly_rent" attrs="{'invisible': [('rental_type', '!=', 'weekly')]}"/>
+                            <field name="monthly_rent" attrs="{'invisible': [('rental_type', '!=', 'monthly')]}"/>
+                            <field name="yearly_rent" attrs="{'invisible': [('rental_type', '!=', 'yearly')]}"/>
+                            <field name="total_expected_rent"/>
+                            <field name="validity"/>
+                            <field name="date_deadline"/>
+                        </group>
+
+                    </group>
+                    <br/>
+                    <group string="Offer a Price to get the property">
+                        <field name="price"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="rental_offers_model_action" model="ir.actions.act_window">
+        <field name="name">Rental Offers</field>
+        <field name="res_model">rental.offers</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('property_ids','=', active_id)]</field>
+    </record>
+
+    <record id="add_offers_model_action_tenant" model="ir.actions.act_window">
+        <field name="name">Rental Offers</field>
+        <field name="res_model">rental.offers</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'sequence':3, 'view_mode': 'form', 'view_id': ref('property_rental.rental_offers_form_view')})]"/>
+    </record>
+</odoo>

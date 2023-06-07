@@ -7,6 +7,7 @@
                 groups="property_rental_owner"/>
             <menuitem id="property_tag_menu_action" action="property_tag_model_action"
                 groups="property_rental_owner"/>
+<!--            <menuitem id="rental_offers_menu" action="rental_offers_model_action"/>-->
         </menuitem>
     </menuitem>
 </odoo>
