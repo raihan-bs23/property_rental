@@ -39,7 +39,7 @@ class RealEstateProperties(models.Model):
     seller_id = fields.Many2one('res.users', default=lambda self: self.env.user, readonly=True)
     buyer_id = fields.Many2one('res.partner', string="Buyer Name", readonly=True)
     tag_id = fields.Many2many("estate.property.tag")
-    offer_ids = fields.One2many('estate.property.offers', 'property_ids', string="Offers")
+    offer_ids = fields.One2many('estate.property.offers', 'property_ids', string="Property Offers")
     total_area = fields.Integer(compute='_compute_total_area', string="Total Area", store=True)
     best_price = fields.Float(compute='_compute_best_price', string="Best Offer")
     color = fields.Integer(string="color", compute='_compute_color')

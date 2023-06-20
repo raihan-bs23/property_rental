@@ -44,7 +44,7 @@
                     </div>
                     <div name="button_box" class="oe_button_box">
                         <button class="oe_stat_button" type="object"
-                                name="test_tenant" string="Test"
+                                name="compute_rented_properties" string="Test"
                                 icon="fa-money">
                         </button>
                     </div>
@@ -84,7 +84,16 @@
                             </field>
                         </page>
                         <page string="Rented Properties">
-
+                            <field name="rented_property_ids">
+                                <tree string="Rented Properties">
+                                    <field name="property_name"/>
+                                    <field name="rented_price"/>
+                                    <field name="property_condition"/>
+                                    <field name="rented_date"/>
+                                    <field name="rental_duration"/>
+                                    <field name="rented_till"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

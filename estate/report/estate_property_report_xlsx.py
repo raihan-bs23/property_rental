@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class EstatePropertyXlsx(models.AbstractModel):
     _name = 'report.estate.property_report_xlsx'
     _inherit = 'report.report_xlsx.abstract'
+    _description = 'Property Report XLSX'
 
     def generate_xlsx_report(self, workbook, data, property):
         bold = workbook.add_format({'bold': True})

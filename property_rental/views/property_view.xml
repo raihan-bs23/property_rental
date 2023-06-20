@@ -32,15 +32,14 @@
                         <field name="offer_status" invisible="1"/>
                         <field name="offer_partner" invisible="1"/>
                         <field name="current_user" invisible="1"/>
-                        <button name="property_offer_payment_confirm" type="object" string="Confirm Payment"
+                        <field name="invoice_sent" invisible="1"/>
+                        <button name="send_invoice" type="object" string="Create Invoice"
                                 icon="fa-check"
-                                confirm="Are you sure to confirm payment ?"
-                                groups="property_rental.property_rental_tenant"
+                                groups="property_rental.property_rental_owner"
                                 attrs="{'invisible': [('offer_status', '!=', 'accepted')]}"/>
 
-                        <button name="%(property_rental.confirm_rent_model_action_tenant)d" type="action" string="Confirm Rent"
+                        <button name="property_rent_confirm" type="object" string="Confirm Rent"
                                 icon="fa-check"
-                                confirm="Are you sure to confirm Rent ?"
                                 groups="property_rental.property_rental_owner"
                                 attrs="{'invisible': [('status', '!=', 'reserved')]}"/>
                         <field name="status" widget="statusbar"/>
@@ -57,51 +56,59 @@
                                     icon="fa-plus" context="{'default_property_ids': active_id}"
                                     groups="property_rental.property_rental_tenant">
                             </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="get_view_invoice"
+                                    icon="fa-pencil-square-o"
+                                    attrs="{'invisible': [('invoice_sent', '=', False), ('current_user', '!=', 'offer_partner')]}">
+                                <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                            </button>
                         </div>
+                        <widget name="web_ribbon" title="Rented" attrs="{'invisible': [('status', '!=', 'rented')]}"/>
                         <h1>
-                            <field name="property_name" widget="text_area" placeholder="Enter property name" cols="50"/>
+                            <field name="property_name" widget="text_area" placeholder="Enter property name"
+                                   attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}" cols="50"/>
                             <field name="image" widget="image" class="oe_avatar"/>
                             <br/>
                             <br/>
                         </h1>
                         <group>
                             <group>
-                                <field name="status" readonly="True"/>
-                                <field name="postcode"/>
-                                <field name="address"/>
-                                <field name="property_condition"/>
-                                <field name="date_availability"/>
+                                <field name="status" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                <field name="postcode" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                <field name="address" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                <field name="property_condition" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                <field name="date_availability" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                             </group>
                             <group>
                                 <field name="rented_price"/>
                                 <field name="property_type_ids" widget="many2many_tags"
                                        placeholder="Select property type"
-                                       options="{'color_field': 'color'}"/>
+                                       options="{'color_field': 'color'}" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                                 <field name="property_tag_ids" widget="many2many_tags" placeholder="Select property tag"
-                                       options="{'color_field': 'color'}"/>
+                                       options="{'color_field': 'color'}" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                             </group>
                             <notebook>
                                 <page string="Description">
                                     <group>
-                                        <field name="property_description"/>
-                                        <field name="bedrooms"/>
-                                        <field name="living_area"/>
-                                        <field name="facades"/>
-                                        <field name="garage"/>
-                                        <field name="garden"/>
+                                        <field name="property_description" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="bedrooms" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="living_area" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="facades" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="garage" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="garden" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                                         <field name="garden_area" attrs="{'invisible': [('garden', '=', False)]}"/>
                                         <field name="garden_orientation"
                                                attrs="{'invisible': [('garden', '=', False)]}"/>
-                                        <field name="active"/>
+                                        <field name="active" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                                     </group>
                                 </page>
                                 <page string="Offers" groups="property_rental.property_rental_tenant">
                                     <field name="offer_ids"
-                                           attrs="{'readonly': [('status', 'in', ['offer_accepted', 'sold', 'canceled'])]}">
+                                           attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}">
                                         <tree string="Property Offers" editable="button"
                                               decoration-success="status == 'accepted'"
                                               decoration-danger="status == 'refused'">
-                                            <field name="rental_type"/>
+                                            <field name="rental_type" />
                                             <field name="rental_duration"/>
                                             <field name="total_expected_rent"/>
                                             <field name="price"/>
@@ -114,14 +121,14 @@
                                 </page>
                                 <page string="Price Plan">
                                     <group>
-                                        <field name="weekly_rent"/>
-                                        <field name="monthly_rent"/>
-                                        <field name="yearly_rent"/>
+                                        <field name="weekly_rent" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="monthly_rent" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                                        <field name="yearly_rent" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                                     </group>
                                 </page>
                                 <page string="Others">
                                     <group>
-                                        <field name="sales_man"/>
+                                        <field name="sales_man" />
                                         <field name="renter" readonly="True"/>
                                     </group>
                                 </page>
@@ -129,9 +136,9 @@
                         </group>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
+                        <field name="message_follower_ids" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                        <field name="activity_ids" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
+                        <field name="message_ids" attrs="{'readonly': [('status', 'in', ['reserved', 'rented'])]}"/>
                     </div>
             </form>
         </field>
@@ -190,5 +197,4 @@
                         (0, 0, {'sequence':3, 'view_mode': 'tree', 'view_id': ref('property_rental.rental_property_details_view_tree')}),
                         (0, 0, {'sequence':5, 'view_mode': 'form', 'view_id': ref('property_rental.rental_property_details_view_form')})]"/>
     </record>
-
 </odoo>

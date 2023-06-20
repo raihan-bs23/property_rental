@@ -4,6 +4,7 @@
     'installable': True,
     'application': True,
     'depends': ['mail'],
+    'license': 'LGPL-3',
     'sequence': -96,
     'data': [
         'security/security.xml',
@@ -14,6 +15,7 @@
         'views/rental_offers.xml',
         'views/property_view.xml',
         'views/property_rental_menus.xml',
+        # 'views/inherit_views.xml',
 
     ]
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inherit_confirm_payment_button" model="ir.ui.view">
+            <field name="name">confirm.payment.button.inherit.account.payment.register</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//footer" position="inside">
+                    <button name="property_offer_payment_confirm" type="object" string="Confirm Payment"
+                                icon="fa-check" class="oe_highlight"
+                                confirm="Are you sure to confirm payment ?"
+                                groups="property_rental.property_rental_tenant"
+                                attrs="{'invisible': [('offer_status', '!=', 'accepted')]}"/>
+                </xpath>
+            </field>
+        </record>
+
+<!--    <record id="inherit_rented_property_page" model="ir.ui.view">-->
+<!--            <field name="name">rented.property.page.inherit.property.tenant</field>-->
+<!--            <field name="model">res.users</field>-->
+<!--            <field name="inherit_id" ref="property_rental.tenant_profile_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//notebook" position="inside">-->
+
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+</odoo>

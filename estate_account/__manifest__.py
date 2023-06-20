@@ -4,6 +4,7 @@
     'installable': True,
     'application': True,
     'sequence': -99,
+    'license': 'LGPL-3',
     'depends': ['estate', 'account'],
     'data': [
         'report/inherited_report_view.xml',

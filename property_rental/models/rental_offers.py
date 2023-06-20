@@ -110,9 +110,3 @@ class RentalPropertyOffers(models.Model):
             elif record.rental_type == 'yearly' and record.rental_duration < 1:
                 raise ValidationError('Rental Duration should not be less than 1 year !')
 
-    # @api.model
-    # def create(self, vals):
-    #     existing_offers = self.search([('property_ids', '=', vals['property_ids'])])
-    #     if existing_offers and vals['price'] <= max(existing_offers.mapped('price')):
-    #         raise ValidationError("Offered price can't be equal or lower than an existing offer!")
-    #     return super(RentalPropertyOffers, self).create(vals)

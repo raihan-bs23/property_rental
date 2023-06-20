@@ -75,7 +75,7 @@
                     <group>
                         <group>
                             <field name="rented_date"/>
-                            <field name="rental_duration"/>
+                            <field name="rented_till"/>
                         </group>
                     </group>
                 </sheet>
@@ -99,12 +99,12 @@
                         (0, 0, {'sequence':3, 'view_mode': 'form', 'view_id': ref('property_rental.rental_offers_form_view')})]"/>
     </record>
 
-    <record id="confirm_rent_model_action_tenant" model="ir.actions.act_window">
-        <field name="name">Confirm Rent</field>
-        <field name="res_model">property.details</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-                        (0, 0, {'sequence':2, 'view_mode': 'form', 'view_id': ref('property_rental.confirm_rent_to_tenant_form')})]"/>
-    </record>
+<!--    <record id="confirm_rent_model_action_tenant" model="ir.actions.act_window">-->
+<!--        <field name="name">Confirm Rent</field>-->
+<!--        <field name="res_model">property.details</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--        <field name="view_ids" eval="[(5, 0, 0),-->
+<!--                        (0, 0, {'sequence':2, 'view_mode': 'form', 'view_id': ref('property_rental.confirm_rent_to_tenant_form')})]"/>-->
+<!--    </record>-->
 </odoo>
