@@ -5,8 +5,9 @@ class EstatePropertyXlsx(models.AbstractModel):
     _name = 'report.estate.property_report_xlsx'
     _inherit = 'report.report_xlsx.abstract'
     _description = 'Property Report XLSX'
-
+    
     def generate_xlsx_report(self, workbook, data, property):
+        print("Property Name", property)
         bold = workbook.add_format({'bold': True})
         sheet = workbook.add_worksheet("Properties")
         sheet.set_column('A:R', 18)
@@ -27,7 +28,6 @@ class EstatePropertyXlsx(models.AbstractModel):
             "Property Type",
             "Seller",
             "Buyer",
-
         ]
         for obj in property:
             value = {

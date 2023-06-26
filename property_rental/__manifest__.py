@@ -3,7 +3,7 @@
     'author': "Abu Raihan",
     'installable': True,
     'application': True,
-    'depends': ['mail'],
+    'depends': ['mail', 'report_xlsx'],
     'license': 'LGPL-3',
     'sequence': -96,
     'data': [
@@ -16,6 +16,8 @@
         'views/property_view.xml',
         'views/property_rental_menus.xml',
         # 'views/inherit_views.xml',
+        'report/rental_property_report.xml',
+        'report/rental_report_template.xml'
 
     ]
 }

@@ -14,15 +14,15 @@ class PropertyDetails(models.Model):
 
     property_name = fields.Char(string="Property Name", required=True, tracking=True)
     property_description = fields.Text(string="Property Description")
-    postcode = fields.Char(string="Postcode")
-    address = fields.Text(string="Address")
+    postcode = fields.Char(string="Postcode", required=True)
+    address = fields.Text(string="Address", required=True)
     bedrooms = fields.Integer(string="No. of Bedrooms", default=3)
     living_area = fields.Integer(string="Living Area in (sqm)")
     facades = fields.Integer(string="Facades")
     garage = fields.Boolean(string="Have Garage ?")
     garden = fields.Boolean(string="Have Garden ?")
     garden_area = fields.Integer(string="Garden Area (sqm)")
-    image = fields.Image("Image")
+    image = fields.Image("Image", required=True)
     date_availability = fields.Date(string="Available From",
                                     default=lambda self: fields.Date.today() + relativedelta(months=1))
 
@@ -41,16 +41,15 @@ class PropertyDetails(models.Model):
         ('available', 'Available'),
         ('offer_received', 'Offer Received'),
         ('reserved', 'Reserved'),
-        ('rented', 'Rented'),
-        ('returned', 'Returned')
+        ('rented', 'Rented')
     ], default='available', tracking=True)
     offer_ids = fields.One2many('rental.offers', 'property_ids', string="Rental Offers")
 
     # Rental Infornation
     rental_duration = fields.Integer(related='offer_ids.rental_duration', string="Rental Duration")
-    weekly_rent = fields.Float(string="Weekly Rent(BDT)")
-    monthly_rent = fields.Float(string="Monthly Rent(BDT)")
-    yearly_rent = fields.Float(string="Yearly Rent(BDT)")
+    weekly_rent = fields.Float(string="Weekly Rent(BDT)", required=True)
+    monthly_rent = fields.Float(string="Monthly Rent(BDT)", required=True)
+    yearly_rent = fields.Float(string="Yearly Rent(BDT)", required=True)
     rented_price = fields.Float(related='offer_ids.price', string="Rented Price", readonly=True)
     rented_date = fields.Date(string="Rent Date", default=lambda self: fields.Date.today())
     rented_till = fields.Date(string="Rented Till", compute='')
@@ -89,7 +88,10 @@ class PropertyDetails(models.Model):
     def check_property_name(self):
         for record in self:
             lst = self.search([]).mapped('property_name')
-            rec = lst[1:]
+            rec = lst
+            rec.remove(self.property_name)
+            print(rec)
+            print(self.property_name)
             if record.property_name in rec:
                 raise ValidationError("Property Name Must be Unique !")
 
@@ -107,18 +109,6 @@ class PropertyDetails(models.Model):
         for record in self:
             if len(record.property_type_ids) > 1:
                 raise ValidationError("Multiple Property Type is not Allowed !")
-
-    def property_offer_payment_confirm(self):
-        for record in self:
-            if record.current_user == record.offer_partner:
-                record.status = 'reserved'
-                record.renter = record.current_user.name
-                record.offer_status = ''
-                record.sales_man.notify_success(title="Good News!",
-                                                message=f'{record.offer_partner.name} has confirmed the payment!!',
-                                                sticky=True)
-            else:
-                raise ValidationError("You are not allowed to do this !!")
 
     @api.constrains('offer_ids', 'offer_count', 'move_id.payment_state')
     def _compute_offer_counts(self):

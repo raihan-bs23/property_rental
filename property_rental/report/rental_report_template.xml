@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="rental_property_report">
+        <t t-foreach="docs" t-as="property">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="pt-5">
+                        <div class="address row">
+                            <div name="address" class="col-1" style="margin-right: auto">
+                                <div name="image" class="col-1" style="margin-right: auto">
+                                    <img t-if="property.image"
+                                         t-att-src="'data:image/png;base64,'+property.image.decode('utf-8')"
+                                         style="width: 200px; height: 150px;"/>
+                                </div>
+                            </div>
+                            <h1 style="color:blue;">
+                                <span t-field="property.property_name"/>
+                            </h1>
+                            <address>
+                                <span>
+                                    <span t-field="property.address"/>
+                                </span>
+                            </address>
+                        </div>
+                    </div>
+                    <style>
+                        .field-row {
+                        display: flex;
+                        }
+                        .row {
+                        display: flex;
+                        }
+                        .field {
+                        margin-right: 300px; /* Optional: Add spacing between fields */
+                        }
+                    </style>
+                    <div class="page">
+                        <h6>
+                            <div class="field-row">
+                                <div class="row">
+                                    <div class="field">
+                                        <strong>Salesman:</strong>
+                                        <span t-field="property.sales_man"/>
+                                    </div>
+                                    <div class="field">
+                                        <strong>Property Tag:</strong>
+                                        <span t-field="property.property_tag_ids"/>
+                                    </div>
+                                    <div class="field">
+                                        <strong>Property Condition:</strong>
+                                        <span t-field="property.property_condition"/>
+                                    </div>
+                                    <div class="field">
+                                        <strong>Living Area:</strong>
+                                        <span t-field="property.living_area"/>
+                                    </div>
+                                    <div class="field">
+                                        <strong>Status:</strong>
+                                        <span t-field="property.status"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <t t-if="property.status not in  ['reserved','rented']" class="field">
+                                        <div class="field-row">
+                                            <h6 style="color:red;">
+                                                This property is not rented yet !
+                                            </h6>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="field">
+                                            <strong>Renter:</strong>
+
+                                            <span t-field="property.renter"/>
+                                        </div>
+                                        <div class="field">
+                                            <strong>Rental Duration:</strong>
+                                            <span t-field="property.rental_duration">Months</span>
+                                        </div>
+                                        <div class="field">
+                                            <strong>Rented Date:</strong>
+                                            <span t-field="property.rented_date"/>
+                                        </div>
+                                        <div class="field">
+                                            <strong>Rented Till:</strong>
+                                            <span t-field="property.rented_till"/>
+                                        </div>
+                                        <div class="field">
+                                            <strong>Rented Price:</strong>
+                                            <span t-field="property.rented_price"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </h6>
+                        <br/>
+                        <t t-if="property.status == 'available'">
+                            <br/>
+                            <h5>
+                                <strong>There's No offer for this property :(</strong>
+                            </h5>
+                        </t>
+                        <t t-else="">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Rental Type</th>
+                                        <th>Duration</th>
+                                        <th>Expected Rent</th>
+                                        <th>Offered Price</th>
+                                        <th>Offer Deadline</th>
+                                        <th>Offer By</th>
+                                        <th>Offer Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="offers" t-value="property.mapped('offer_ids')"/>
+                                    <tr t-foreach="offers" t-as="offer">
+                                        <td>
+                                            <span t-field="offer.rental_type"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="offer.rental_duration"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="offer.total_expected_rent"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="offer.price"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="offer.date_deadline"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="offer.partner_id"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="offer.status"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="owned_property_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="property_rental.tenant_property_report">
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="tenant_property_report">
+        <t t-call="web.external_layout">
+            <div class="pt-5">
+                <div class="address row">
+                    <div name="address" class="col-6" style="margin-left: auto">
+                        <div name="address" class="col-3" style="margin-left: auto">
+                            <img src="https://e7.pngegg.com/pngimages/100/571/png-clipart-real-estate-estate-agent-house-property-management-houses-triangle-logo.png"
+                                 alt="Not Found" height="100" width="100"/>
+                        </div>
+                        <h1 style="color:blue;">
+                            Shawpno Real Estate Ltd
+                        </h1>
+                        <address>
+                            <span>
+                                8th Floor, 2 Bir Uttam AK Khandakar Road, Mohakhali, Dhaka 1212
+                            </span>
+                        </address>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .field-row {
+                display: flex;
+                }
+                .row {
+                display: flex;
+                }
+                .field {
+                margin-right: 300px; /* Optional: Add spacing between fields */
+                }
+            </style>
+            <div class="page">
+                <div>
+                    <h1>
+                        <strong>Tenant Name:</strong>
+                        <span t-field="doc.name"/>
+                    </h1>
+                    <h6>
+                        <div class="field-row">
+                            <div class="row">
+                                <div class="field">
+                                    <strong>Email:</strong>
+                                    <span t-field="doc.login"/>
+                                </div>
+                                <div class="field">
+                                    <strong>Company:</strong>
+                                    <span t-field="doc.company_id"/>
+                                </div>
+                                <div class="field">
+                                    <strong>Phone:</strong>
+                                    <span t-field="doc.phone"/>
+                                </div>
+                                <div class="field">
+                                    <strong>Mobile:</strong>
+                                    <span t-field="doc.mobile"/>
+                                </div>
+                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="field">-->
+<!--                                    <div style="text-align: center;">-->
+<!--                                        <img t-att-src="'data:image/png;base64,'+doc.image_1920.decode('utf-8')"-->
+<!--                                             style="width: 150px; height: 130px; border-radius: 90%;"/>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+                    </h6>
+                </div>
+                <div>
+                    <h2 style="text-align: center;">
+                        Rented Property
+                        <br/>
+                    </h2>
+                    <style>
+                        .thead-size {
+                        font-size: 14px;
+                        }
+                    </style>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="thead-size">Image</th>
+                                <th class="thead-size">Property Name</th>
+                                <th class="thead-size">Property Condition</th>
+                                <th class="thead-size">Rental Type</th>
+                                <th class="thead-size">Total Expected Price</th>
+                                <th class="thead-size">Rented Price</th>
+                                <th class="thead-size">Duration</th>
+                                <th class="thead-size">Rented Date</th>
+                                <th class="thead-size">Rented Till</th>
+                                <th class="thead-size">Rented By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.rented_property_ids" t-as="property">
+                                <tr>
+                                    <td>
+                                        <img t-att-src="'data:image/png;base64,'+property.image.decode('utf-8')"
+                                             style="width: 60px; height: 50px;"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.property_name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.property_condition"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.offer_ids.rental_type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.offer_ids.total_expected_rent"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.rented_price"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.offer_ids.rental_duration"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.rented_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="property.rented_till"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.name"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
