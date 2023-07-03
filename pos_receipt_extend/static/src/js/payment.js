@@ -28,16 +28,11 @@ odoo.define('pos_receipt_extend.PaymentScreen', function (require) {
          }).catch(function (error) {
             console.log('Failed to get order id at its offline ');
             throw error;
-
          });
          return receipt_order
       }
    }
-
-
-
    Registries.Component.extend(PaymentScreen, PosPaymentReceiptExtend);
-
    return PaymentScreen;
 });
 

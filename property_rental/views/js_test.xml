@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Form View to edit data in a form-->
+    <record id="js_test_form" model="ir.ui.view">
+        <field name="name">js.test.form</field>
+        <field name="model">property.details</field>
+        <field name="arch" type="xml">
+            <form string="JS_TEST_FORM" editable="bottom">
+                <sheet>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="js_test_action" model="ir.actions.act_window">
+        <field name="name">JS Test</field>
+        <field name="res_model">property.details</field>
+        <field name="view_mode">form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'sequence':5, 'view_mode': 'form', 'view_id': ref('property_rental.js_test_form')})]"/>
+    </record>
+</odoo>

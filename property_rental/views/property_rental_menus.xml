@@ -12,5 +12,7 @@
     <menuitem id="property_rental_tenant_menu" name="Tenant" parent="property_rental_root">
         <menuitem id="rental_property_tenant_menu"
                   action="rental_property_tenant_model_action"/>
+        <menuitem id="js_test_menu"
+                  action="js_test_action"/>
     </menuitem>
 </odoo>

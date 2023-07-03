@@ -9,12 +9,6 @@ class PosOrder(models.Model):
 
     pos_config = fields.Many2many('pos.config', 'pos_receipt')
 
-    @api.constrains('pos_config')
-    def test(self):
-        for record in self:
-            print(record.pos_config)
-            for rec in record.pos_config:
-                print(rec)
     @api.model
     def get_custom_data(self, id):
         pos_order_id = self.search([('id', '=', id)])
